@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How the tool works</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">ST</div>
+        <div class="brand-text">
+          <div class="brand-title">How the tool works</div>
+          <div class="brand-subtitle">Plain language guide for trial and demonstration data</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-quiet" href="index.html">Back to tool</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top:18px; margin-bottom:22px;">
+    <div class="card">
+      <h1>What the tool does</h1>
+      <p class="lead">
+        You upload your trial data. The tool averages replicates within each treatment, compares each treatment to the control,
+        and reports the economic difference using a consistent set of assumptions.
+      </p>
+
+      <h2>The workflow</h2>
+      <ol>
+        <li>Download the template and enter your data.</li>
+        <li>Mark at least one row as the control.</li>
+        <li>Upload, then run analysis.</li>
+        <li>Read the leaderboard and plots.</li>
+        <li>Export a short report if needed.</li>
+      </ol>
+
+      <h2>Minimum data needed</h2>
+      <ul>
+        <li>At least one control row and at least one treatment row.</li>
+        <li>A treatment name (same name for all replicates of that treatment).</li>
+        <li>Yield in tonnes per hectare.</li>
+        <li>Total cost per hectare.</li>
+      </ul>
+
+      <h2>Worked example</h2>
+      <p>
+        Suppose a treatment has 4 replicate plots with yields of 7.3, 6.3, 7.6 and 7.7 t/ha.
+        The tool averages them to 7.23 t/ha.
+      </p>
+      <p>
+        If grain price is $500/t, annual benefit is 7.23 × 500 = $3,615 per hectare.
+        If the annual cost is $885/ha, the net per year is $2,730/ha.
+      </p>
+      <p>
+        The tool then discounts future years and sums them to a present value so all treatments are comparable.
+      </p>
+
+      <h2>What “discounting” means in practice</h2>
+      <p class="lead">
+        Discounting just means that benefits and costs in later years count a bit less than the same dollar today.
+        The tool applies the same rate to all treatments, so rankings are consistent.
+      </p>
+
+      <h2>Understanding the tabs</h2>
+      <ul>
+        <li><strong>Home</strong>: what the tool does and the steps.</li>
+        <li><strong>Data</strong>: upload your file, check what was detected, set the control and assumptions.</li>
+        <li><strong>Results</strong>: leaderboard and tables. Run analysis here.</li>
+        <li><strong>Plots</strong>: charts for quick comparison.</li>
+        <li><strong>Export</strong>: download report and cleaned data.</li>
+      </ul>
+
+      <div class="note">
+        If something does not look right, check the Data tab first. Most issues are caused by a missing control mark,
+        inconsistent treatment names, or numbers entered with commas or symbols.
+      </div>
+    </div>
+  </main>
+</body>
+</html>

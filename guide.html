@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guide: CBA Cost benefit analysis tool</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">CBA</div>
+        <div class="brand-text">
+          <div class="brand-title">Guide</div>
+          <div class="brand-subtitle">Step by step help for growers and extension staff</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-quiet" href="index.html">Back to tool</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container guide">
+    <section class="card">
+      <div class="card-header">
+        <h1>How to use the tool</h1>
+      </div>
+      <div class="card-body">
+        <ol class="steps">
+          <li><strong>Download the template</strong> (Data tab) and enter one row per replicate plot.</li>
+          <li><strong>Mark the control</strong> by setting <code>is_control</code> to TRUE for the control rows.</li>
+          <li><strong>Upload your file</strong> (Data tab) then check the data status box (rows, treatments, controls, readiness).</li>
+          <li><strong>Run analysis</strong> (Results tab). The leaderboard compares treatment averages against the control average.</li>
+          <li><strong>Export</strong> (Export tab) to download the cleaned data and report tables.</li>
+        </ol>
+        <div class="note">Better structured data gives better analysis. If some optional fields are missing, the tool still runs and clearly labels results as indicative.</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header"><h2>What each tab does</h2></div>
+      <div class="card-body">
+        <p><strong>Home</strong> explains the workflow and minimum data needed.</p>
+        <p><strong>Data</strong> is where you validate, upload, and fix common file issues. It also shows a preview and lets you download a cleaned file.</p>
+        <p><strong>Results</strong> shows the treatment leaderboard, the plain language interpretation, and detailed tables. Replicates can be viewed under “Show more”.</p>
+        <p><strong>Export</strong> provides one click downloads: report tables, cleaned data, and copy ready prompts for policy briefs.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header"><h2>Minimum data required</h2></div>
+      <div class="card-body">
+        <ul class="bullets">
+          <li>At least <strong>one control row</strong> where <code>is_control</code> is TRUE.</li>
+          <li>At least <strong>one treatment row</strong> where <code>is_control</code> is FALSE.</li>
+          <li>These columns must be present (exact spelling): <code>treatment_name</code>, <code>is_control</code>, <code>yield_t_ha</code>, <code>total_cost_per_ha</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header"><h2>How the calculations work (with the example dataset)</h2></div>
+      <div class="card-body">
+        <p>This section shows every calculation step the tool performs using <code>example_data.tsv</code> and the default settings:</p>
+        <ul class="bullets">
+          <li>Price per tonne <strong>P = $500</strong></li>
+          <li>Years <strong>T = 10</strong></li>
+          <li>Discount rate <strong>r = 5%</strong></li>
+        </ul>
+
+        <h3>Step 1. Average replicate rows within each treatment</h3>
+        <p>Each treatment has several replicate plot rows. The tool averages replicates within a treatment, then compares that average against the control average.</p>
+
+        <h4>Control replicate rows (from the file)</h4>
+        <table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Plot</th>
+      <th>Replicate</th>
+      <th>Yield (t/ha)</th>
+      <th>Cost ($/ha)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>6.203169</td>
+      <td>694.627249</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>2</td>
+      <td>4.992333</td>
+      <td>694.627249</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>3</td>
+      <td>7.369412</td>
+      <td>694.627249</td>
+    </tr>
+    <tr>
+      <td>45</td>
+      <td>4</td>
+      <td>6.213529</td>
+      <td>694.627249</td>
+    </tr>
+  </tbody>
+</table>
+
+        <p><strong>Control mean yield</strong></p>
+        <pre class="calc">(6.203169 + 4.992333 + 7.369412 + 6.213529) / 4 = 6.194611</pre>
+
+        <p><strong>Control mean cost</strong></p>
+        <pre class="calc">(694.627249 + 694.627249 + 694.627249 + 694.627249) / 4 = 694.627249</pre>
+
+        <h4>Top treatment replicate rows: Deep OM (CP1) + PAM</h4>
+        <table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Plot</th>
+      <th>Replicate</th>
+      <th>Yield (t/ha)</th>
+      <th>Cost ($/ha)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>6</td>
+      <td>1</td>
+      <td>7.270973</td>
+      <td>884.882704</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>2</td>
+      <td>6.340867</td>
+      <td>884.882704</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>3</td>
+      <td>7.578665</td>
+      <td>884.882704</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>4</td>
+      <td>7.716097</td>
+      <td>884.882704</td>
+    </tr>
+  </tbody>
+</table>
+
+        <p><strong>Deep OM (CP1) + PAM mean yield</strong></p>
+        <pre class="calc">(7.270973 + 6.340867 + 7.578665 + 7.716097) / 4 = 7.226651</pre>
+
+        <p><strong>Deep OM (CP1) + PAM mean cost</strong></p>
+        <pre class="calc">(884.882704 + 884.882704 + 884.882704 + 884.882704) / 4 = 884.882704</pre>
+
+        <h3>Step 2. Discount factor (time value of money)</h3>
+        <p>The tool uses an annual discount factor across the chosen years:</p>
+        <pre class="calc">DF(r,T) = Σ[ t=1..T ] 1 / (1+r)^t</pre>
+        <p>With r = 0.05 and T = 10, each year term is:</p>
+        <table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Year t</th>
+      <th>1/(1+r)^t</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>0.952381</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.907029</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.863838</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.822702</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.783526</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.746215</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.710681</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.676839</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.644609</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>0.613913</td>
+    </tr>
+  </tbody>
+</table>
+        <p>Sum of terms:</p>
+        <pre class="calc">DF(0.05,10) = 7.721734929185</pre>
+
+        <h3>Step 3. Annual benefit from yield</h3>
+        <p>Annual benefit per hectare is yield times price:</p>
+        <pre class="calc">Annual benefit = mean_yield × P</pre>
+
+        <p><strong>Control</strong></p>
+        <pre class="calc">6.194611 × 500 = 3,097.31</pre>
+
+        <p><strong>Deep OM (CP1) + PAM</strong></p>
+        <pre class="calc">7.226651 × 500 = 3,613.33</pre>
+
+        <h3>Step 4. Present value of benefits and costs</h3>
+        <p>Benefits and costs are treated as annual flows repeated over T years and discounted using DF:</p>
+        <pre class="calc">PV benefits = annual_benefit × DF</pre>
+        <pre class="calc">PV costs = mean_cost × DF</pre>
+
+        <p><strong>Control PV benefits</strong></p>
+        <pre class="calc">3,097.31 × 7.721734929185 = 23,916.57</pre>
+
+        <p><strong>Control PV costs</strong></p>
+        <pre class="calc">694.627249 × 7.721734929185 = 5,363.73</pre>
+
+        <p><strong>Deep OM (CP1) + PAM PV benefits</strong></p>
+        <pre class="calc">3,613.33 × 7.721734929185 = 27,901.14</pre>
+
+        <p><strong>Deep OM (CP1) + PAM PV costs</strong></p>
+        <pre class="calc">884.882704 × 7.721734929185 = 6,832.83</pre>
+
+        <h3>Step 5. Net present value (NPV), benefit cost ratio (BCR), and comparison to control</h3>
+        <pre class="calc">NPV = PV benefits - PV costs</pre>
+        <pre class="calc">BCR = PV benefits / PV costs</pre>
+        <pre class="calc">Difference vs control (NPV) = NPV_treatment - NPV_control</pre>
+
+        <p><strong>Control NPV</strong></p>
+        <pre class="calc">23,916.57 - 5,363.73 = 18,552.84</pre>
+
+        <p><strong>Deep OM (CP1) + PAM NPV</strong></p>
+        <pre class="calc">27,901.14 - 6,832.83 = 21,068.31</pre>
+
+        <p><strong>Deep OM (CP1) + PAM difference vs control</strong></p>
+        <pre class="calc">21,068.31 - 18,552.84 = 2,515.47</pre>
+
+        <h3>Step 6. Full table of computed results (all treatments)</h3>
+        <p>This table shows the intermediate calculations used by the tool for every treatment in the example dataset.</p>
+        <table class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Treatment</th>
+      <th>Control?</th>
+      <th>Replicates</th>
+      <th>Mean yield (t/ha)</th>
+      <th>Mean cost ($/ha)</th>
+      <th>Annual benefit ($/ha)</th>
+      <th>PV benefits ($/ha)</th>
+      <th>PV costs ($/ha)</th>
+      <th>NPV ($/ha)</th>
+      <th>BCR</th>
+      <th>ROI (%)</th>
+      <th>Difference vs control NPV ($/ha)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Deep OM (CP1) + PAM</td>
+      <td>No</td>
+      <td>4</td>
+      <td>7.227</td>
+      <td>884.88</td>
+      <td>3,613.33</td>
+      <td>27,901.14</td>
+      <td>6,832.83</td>
+      <td>21,068.31</td>
+      <td>4.083</td>
+      <td>308.3</td>
+      <td>2,515.47</td>
+    </tr>
+    <tr>
+      <td>Surface Silicon</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.517</td>
+      <td>834.88</td>
+      <td>3,258.66</td>
+      <td>25,162.48</td>
+      <td>6,446.74</td>
+      <td>18,715.74</td>
+      <td>3.903</td>
+      <td>290.3</td>
+      <td>162.90</td>
+    </tr>
+    <tr>
+      <td>Control</td>
+      <td>Yes</td>
+      <td>4</td>
+      <td>6.195</td>
+      <td>694.63</td>
+      <td>3,097.31</td>
+      <td>23,916.57</td>
+      <td>5,363.73</td>
+      <td>18,552.84</td>
+      <td>4.459</td>
+      <td>345.9</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <td>Deep Ripping</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.545</td>
+      <td>884.88</td>
+      <td>3,272.67</td>
+      <td>25,270.68</td>
+      <td>6,832.83</td>
+      <td>18,437.85</td>
+      <td>3.698</td>
+      <td>269.8</td>
+      <td>-114.99</td>
+    </tr>
+    <tr>
+      <td>Deep liq. NPKS</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.461</td>
+      <td>884.88</td>
+      <td>3,230.39</td>
+      <td>24,944.23</td>
+      <td>6,832.83</td>
+      <td>18,111.40</td>
+      <td>3.651</td>
+      <td>265.1</td>
+      <td>-441.44</td>
+    </tr>
+    <tr>
+      <td>Deep Carbon-coated mineral (CCM)</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.064</td>
+      <td>917.13</td>
+      <td>3,031.90</td>
+      <td>23,411.55</td>
+      <td>7,081.86</td>
+      <td>16,329.69</td>
+      <td>3.306</td>
+      <td>230.6</td>
+      <td>-2,223.15</td>
+    </tr>
+    <tr>
+      <td>Deep OM (CP1) + liq. Gypsum (CHT)</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.287</td>
+      <td>1,106.03</td>
+      <td>3,143.54</td>
+      <td>24,273.61</td>
+      <td>8,540.50</td>
+      <td>15,733.11</td>
+      <td>2.842</td>
+      <td>184.2</td>
+      <td>-2,819.73</td>
+    </tr>
+    <tr>
+      <td>Deep OM + Gypsum (CP2)</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.258</td>
+      <td>1,124.88</td>
+      <td>3,129.00</td>
+      <td>24,161.33</td>
+      <td>8,686.05</td>
+      <td>15,475.28</td>
+      <td>2.782</td>
+      <td>178.2</td>
+      <td>-3,077.56</td>
+    </tr>
+    <tr>
+      <td>Deep liq. Gypsum (CHT)</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.237</td>
+      <td>1,234.88</td>
+      <td>3,118.31</td>
+      <td>24,078.76</td>
+      <td>9,535.44</td>
+      <td>14,543.32</td>
+      <td>2.525</td>
+      <td>152.5</td>
+      <td>-4,009.52</td>
+    </tr>
+    <tr>
+      <td>Deep Gypsum</td>
+      <td>No</td>
+      <td>4</td>
+      <td>6.130</td>
+      <td>1,384.88</td>
+      <td>3,064.85</td>
+      <td>23,665.96</td>
+      <td>10,693.70</td>
+      <td>12,972.26</td>
+      <td>2.213</td>
+      <td>121.3</td>
+      <td>-5,580.59</td>
+    </tr>
+    <tr>
+      <td>Deep OM (CP1) + Carbon-coated mineral (CCM)</td>
+      <td>No</td>
+      <td>4</td>
+      <td>5.471</td>
+      <td>1,097.13</td>
+      <td>2,735.32</td>
+      <td>21,121.42</td>
+      <td>8,471.77</td>
+      <td>12,649.65</td>
+      <td>2.493</td>
+      <td>149.3</td>
+      <td>-5,903.19</td>
+    </tr>
+    <tr>
+      <td>Deep OM (CP1)</td>
+      <td>No</td>
+      <td>4</td>
+      <td>5.317</td>
+      <td>1,049.88</td>
+      <td>2,658.50</td>
+      <td>20,528.23</td>
+      <td>8,106.92</td>
+      <td>12,421.31</td>
+      <td>2.532</td>
+      <td>153.2</td>
+      <td>-6,131.53</td>
+    </tr>
+  </tbody>
+</table>
+
+        <div class="note">All values are per hectare. Replicates are averaged within each treatment. The leaderboard ranks by NPV (highest first).</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <div>Cost benefit analysis tool</div>
+      <div class="muted">Guide</div>
+    </div>
+  </footer>
+</body>
+</html>

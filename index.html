@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CBA Cost benefit analysis tool</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="container header-row">
+      <div class="brand" aria-label="CBA Cost benefit analysis tool">
+        <div class="brand-mark" aria-hidden="true">CBA</div>
+        <div class="brand-text">
+          <div class="brand-title">CBA Cost benefit analysis tool</div>
+          <div class="brand-subtitle">Compare treatments against a control using benefit cost analysis</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-quiet" href="guide.html" target="_blank" rel="noopener">Guide</a>
+        <button id="btnReset" class="btn btn-quiet" type="button" aria-label="Reset tool to start">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="navigation" aria-label="Tool sections">
+    <div class="container tabs-row" role="tablist" aria-label="Tabs">
+      <button class="tab is-active" role="tab" aria-selected="true" aria-controls="tab-home" id="tabbtn-home" data-tab="home" type="button">Home</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-data" id="tabbtn-data" data-tab="data" type="button">Data</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-results" id="tabbtn-results" data-tab="results" type="button">Results</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-sensitivity" id="tabbtn-sensitivity" data-tab="sensitivity" type="button">Sensitivity</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-export" id="tabbtn-export" data-tab="export" type="button">Export</button>
+    </div>
+  </nav>
+
+  <main id="main" class="container" role="main">
+    <section class="progress" aria-label="Workflow progress">
+      <div id="progressLine" class="progress-line" role="list">
+        <span class="progress-step is-active" role="listitem" data-step="load">Load data</span>
+        <span class="progress-sep" aria-hidden="true">›</span>
+        <span class="progress-step" role="listitem" data-step="check">Check</span>
+        <span class="progress-sep" aria-hidden="true">›</span>
+        <span class="progress-step" role="listitem" data-step="run">Run</span>
+        <span class="progress-sep" aria-hidden="true">›</span>
+        <span class="progress-step" role="listitem" data-step="review">Review</span>
+        <span class="progress-sep" aria-hidden="true">›</span>
+        <span class="progress-step" role="listitem" data-step="export">Export</span>
+      </div>
+    </section>
+
+    <section class="status-card" aria-live="polite" aria-atomic="true">
+      <div class="status-left">
+        <div class="status-title">Status</div>
+        <div id="statusLine" class="status-line">Example data loaded. Next: go to Data to upload your file.</div>
+        <div class="status-metrics">
+          <div class="pill" id="pillFile">File: <span id="metaFile">example_data.tsv</span></div>
+          <div class="pill">Rows: <span id="metaRows">0</span></div>
+          <div class="pill">Treatments: <span id="metaTreatments">0</span></div>
+          <div class="pill">Controls: <span id="metaControls">0</span></div>
+        </div>
+      </div>
+      <div class="status-right">
+        <button id="readiness" class="readiness readiness-amber" type="button" title="Data readiness" aria-label="Data readiness. Select to see the top fixes.">Amber</button>
+        <div id="readinessPopover" class="popover" role="dialog" aria-label="Top fixes" hidden>
+          <div class="popover-title">Top fixes</div>
+          <div id="readinessFixes" class="popover-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-home" class="tab-panel is-active" role="tabpanel" aria-labelledby="tabbtn-home">
+      <div class="card">
+        <h1>What this tool does</h1>
+        <p class="lead">Use this tool to compare trial treatments against a reference control in simple dollar terms per hectare. It turns replicated plot results into a ranked shortlist you can discuss with growers and extension teams.</p>
+        <p>It uses only what most trial spreadsheets already contain: treatment names, yield (t/ha), and total costs ($/ha). You choose the grain price, time horizon, and discount rate. The tool then reports NPV, benefit–cost ratio, and the difference versus the control for each treatment.</p>
+        <div class="note"><strong>Farmer-first output:</strong> the Results tab includes a one-paragraph plain-language summary and a decision confidence line that changes when a selected option is better or worse than the control.</div>
+      </div>
+
+      <div class="card">
+        <h1>Start here</h1>
+        <p class="lead">
+          This tool compares trial treatments against a control using benefit-cost analysis and clear results.
+          It is designed for replicated field trials and demonstration sites where each treatment has one or more plots or replicates.
+        </p>
+
+        <div class="workflow">
+          <div class="workflow-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Download the template</div>
+              <div class="step-text">Use the template to keep column names consistent. Fill as many fields as you can.</div>
+              <div class="step-actions">
+                <a class="btn" id="downloadTemplate" href="data_template.tsv" download>Download TSV template</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Fill your data</div>
+              <div class="step-text">
+                Minimum required to run: at least one control row, at least one treatment row, a treatment name, yield, and total cost per hectare.
+                Missing optional fields are allowed.
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Upload, validate, run</div>
+              <div class="step-text">Upload your TSV/CSV, check what the tool detected, then run the analysis.</div>
+              <div class="step-actions">
+                <button class="btn btn-secondary" type="button" data-goto="data">Go to Data</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Review results and export</div>
+              <div class="step-text">See the leaderboard and download a report and cleaned data.</div>
+              <div class="step-actions">
+                <button class="btn btn-secondary" type="button" data-goto="results">Go to Results</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          <strong>How replicates are used:</strong> multiple rows per treatment are averaged. Results compare each treatment average against the control average.
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Quick tips</h2>
+          <ul class="clean-list">
+            <li>Use consistent treatment names across rows.</li>
+            <li>Mark the control row(s) clearly in <code>is_control</code>.</li>
+            <li>Use numbers only in yield and cost fields (no commas, dollar signs, or units).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Assumptions used</h2>
+          <div id="assumptionsBoxHome" class="assumptions"></div>
+          <div class="muted">You can change these in the Data tab before running analysis.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-sensitivity" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-sensitivity" hidden>
+      <div class="card">
+        <div class="card-header">
+          <h1>Sensitivity</h1>
+          <div class="card-header-actions">
+            <button id="btnRunSensitivity" class="btn" type="button" data-tip="Runs sensitivity checks using the current results and settings.">Run sensitivity</button>
+          </div>
+        </div>
+
+        <div class="note">
+          Sensitivity checks show how results change when key assumptions move up or down. This helps you understand how robust the ranking is.
+        </div>
+
+        <div id="sensitivitySummary" class="callout" aria-live="polite">
+          <h2 class="callout-title">What this tells you</h2>
+          <div id="sensitivitySummaryText" class="callout-body">Run the analysis first, then run sensitivity to see how rankings respond to different assumptions.</div>
+        </div>
+
+        <div class="preset-row" aria-label="Sensitivity presets">
+          <button id="presetConservative" class="btn btn-secondary" type="button">Conservative</button>
+          <button id="presetCentral" class="btn btn-secondary" type="button">Central</button>
+          <button id="presetOptimistic" class="btn btn-secondary" type="button">Optimistic</button>
+        </div>
+        <div id="presetHint" class="muted" aria-live="polite">Choose a preset to see what it assumes.</div>
+        <details class="details">
+          <summary>Advanced</summary>
+          <div class="help">You can change price, years, and discount rate in the Data tab. Presets set these for you with one click.</div>
+        </details>
+
+        <details class="details">
+          <summary>View sensitivity table</summary>
+          <div id="sensitivityTableWrap" class="table-wrap"></div>
+        </details>
+      </div>
+    </section>
+
+    <section id="tab-data" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-data" hidden>
+      <div class="card">
+        <div class="card-header">
+          <h1>Data</h1>
+          <div class="card-header-actions">
+            <button id="btnLoadExample" class="btn btn-quiet" type="button">Load example data</button>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label class="label" for="fileInput">Choose a file</label>
+            <div class="input-row">
+              <input id="fileInput" type="file" accept=".tsv,.csv,text/tab-separated-values,text/csv" aria-describedby="fileHelp" />
+              <button id="btnValidateLocal" class="btn btn-secondary" type="button"
+                data-tip="Checks your file on this device. It will show column matches and common issues before you upload.">Validate</button>
+            </div>
+            <div id="fileHelp" class="help">
+              Upload a TSV or CSV. The tool will try to match column names even if they differ slightly.
+            </div>
+
+            <div class="need-check" role="note" aria-label="What I need to run">
+              <div class="need-title">What I need</div>
+              <ul class="need-list">
+                <li>At least one control row marked in <code>is_control</code></li>
+                <li>At least one treatment row with <code>is_control</code> not true</li>
+                <li>Columns for <code>yield_t_ha</code> and <code>total_cost_per_ha</code></li>
+              </ul>
+            </div>
+
+            <div class="common-fixes" role="note" aria-label="Common fixes">
+              <div class="common-fixes-title">Common fixes</div>
+              <div class="common-fixes-items">
+                <button id="fixMarkControl" class="link" type="button">Mark a control row</button>
+                <button id="fixRenameColumns" class="link" type="button">Rename or map columns</button>
+                <button id="fixRemoveCommas" class="link" type="button">Remove commas and symbols</button>
+              </div>
+            </div>
+
+            <div class="data-tips" role="note">
+              <div class="data-tips-title">Data tips</div>
+              <ul>
+                <li>Avoid merged header cells.</li>
+                <li>Remove commas from numbers (for example 1,200 becomes 1200).</li>
+                <li>Remove dollar signs and units from numeric cells.</li>
+                <li>Check yield units. If your values look like kilograms per hectare, convert to tonnes per hectare.</li>
+                <li>Make sure at least one row is marked as control in <code>is_control</code>.</li>
+              </ul>
+            </div>
+
+            <div class="actions-primary">
+              <button id="btnUpload" class="btn" type="button"
+                data-tip="Loads your file into the tool. Next you can confirm the control and run the analysis.">Upload file</button>
+            </div>
+
+            <div id="validatePanel" class="panel" hidden>
+              <div class="panel-title">Preview your data</div>
+              <div id="previewSummary" class="preview-summary"></div>
+
+              <details class="details">
+                <summary>Show mapping details</summary>
+                <div id="mappingDetails" class="mono small"></div>
+                <div class="actions-inline">
+                  <button id="btnAcceptMapping" class="btn btn-secondary" type="button">Accept mapping</button>
+                  <button id="btnDownloadCleanedFromPreview" class="btn btn-quiet" type="button">Download cleaned file</button>
+                </div>
+              </details>
+
+              <div id="previewIssues" class="issues"></div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="h2">Settings</h2>
+            <div class="form-grid">
+              <div class="field">
+                <label class="label" for="pricePerT">Grain price ($ per tonne)</label>
+                <input id="pricePerT" type="number" step="1" min="0" />
+              </div>
+              <div class="field">
+                <label class="label" for="years">Years</label>
+                <input id="years" type="number" step="1" min="1" max="50" />
+              </div>
+              <div class="field">
+                <label class="label" for="discount">Discount rate (%)</label>
+                <input id="discount" type="number" step="0.1" min="0" max="30" />
+              </div>
+                          <div class="field field-wide">
+                <label class="checkbox">
+                  <input id="yieldInKg" type="checkbox" />
+                  My yields are in kg/ha (convert to t/ha)
+                </label>
+                <div class="help">If selected, the tool divides yield values by 1000 and notes this in results and exports.</div>
+              </div>
+</div>
+            <div class="actions-primary">
+              <button id="btnApplySettings" class="btn btn-secondary" type="button"
+                data-tip="Applies the settings. Run analysis in the Results tab to update outputs.">Apply settings</button>
+              <button id="btnRestoreSettings" class="btn btn-quiet" type="button">Use my last settings</button>
+            </div>
+
+            <div class="card-subtle">
+              <h3 class="h3">Control selection</h3>
+              <div class="help">If your file includes more than one control label, pick the one to use as the reference.</div>
+              <label class="checkbox" style="margin:8px 0 10px">
+                <input id="pinControl" type="checkbox" />
+                Pin control (keep this control fixed)
+              </label>
+              <div class="input-row">
+                <select id="controlSelect" aria-label="Control treatment selection"></select>
+                <button id="btnSetControl" class="btn btn-secondary" type="button"
+                  data-tip="Sets the current reference control for comparisons.">Set control</button>
+              </div>
+              <div class="muted">Current reference control: <strong id="currentControl">-</strong></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="tab-results" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-results" hidden>
+      <div class="card">
+        <div class="card-header">
+          <h1>Results</h1>
+          <div class="card-header-actions">
+            <button id="btnRun" class="btn" type="button"
+              data-tip="Runs the calculations using the current settings and control selection.">Run analysis</button>
+          </div>
+        </div>
+
+        <div id="badgeIndicative" class="badge badge-hidden" aria-live="polite">Indicative results (some optional fields are missing)</div>
+
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-title">Top treatment</div>
+            <div id="topTreatment" class="summary-value">-</div>
+            <div id="topTreatmentWhy" class="summary-sub">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Difference vs control (NPV)</div>
+            <div id="topDeltaNpv" class="summary-value">-</div>
+            <div class="summary-sub">Per hectare, present value</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Current reference control</div>
+            <div id="controlNameResult" class="summary-value">-</div>
+            <div class="summary-sub">Used for all comparisons</div>
+          </div>
+        </div>
+
+        <div id="cardVsControl" class="card-subtle" aria-label="What changed versus control">
+          <div class="row-between">
+            <h2 class="h2">What changed versus control</h2>
+            <div class="input-row compact">
+              <label class="sr-only" for="treatmentPick">Select treatment</label>
+              <select id="treatmentPick" aria-label="Select a treatment to compare"></select>
+              <button id="btnViewDetails" class="btn btn-quiet" type="button">View details</button>
+            </div>
+          </div>
+          <div class="delta-row">
+            <div class="delta">
+              <div class="delta-k">Yield change</div>
+              <div id="deltaYield" class="delta-v">-</div>
+            </div>
+            <div class="delta">
+              <div class="delta-k">Cost change</div>
+              <div id="deltaCost" class="delta-v">-</div>
+            </div>
+            <div class="delta">
+              <div class="delta-k">Net change</div>
+              <div id="deltaNet" class="delta-v">-</div>
+            </div>
+          </div>
+          <div class="muted">All values are per hectare. Replicates are averaged within each treatment.</div>
+        </div>
+
+        <div class="card-subtle" aria-label="Comparison workflow">
+          <div class="row-between">
+            <h2 class="h2">Compare</h2>
+            <div class="input-row compact" role="group" aria-label="Comparison mode">
+              <label class="radio"><input type="radio" name="compareMode" id="compareModeControl" value="control" checked> Vs control</label>
+              <label class="radio"><input type="radio" name="compareMode" id="compareModeTwo" value="two"> Two treatments</label>
+            </div>
+          </div>
+          <div id="compareModePanelControl" class="muted">Default view compares one treatment to the pinned control.</div>
+          <div id="compareModePanelTwo" class="compare-panel" hidden>
+            <div class="compare-grid">
+              <div>
+                <label class="label" for="compareA">Treatment A</label>
+                <select id="compareA"></select>
+              </div>
+              <div>
+                <label class="label" for="compareB">Treatment B</label>
+                <select id="compareB"></select>
+              </div>
+            </div>
+            <div id="compareOut" class="compare-out" aria-live="polite">Select two treatments to see the side-by-side comparison.</div>
+          </div>
+        </div>
+
+        <div class="note">
+          Leaderboard ranks treatments by net present value. Values are per hectare. Replicates are averaged within each treatment.
+        </div>
+        <div class="callout" id="farmerInterpretation" aria-live="polite">
+          <h2 class="callout-title">What this means</h2>
+          <div id="farmerInterpretationText" class="callout-body">Upload data and run analysis to see a plain language summary here.</div>
+        </div>
+        <div id="confidenceLine" class="confidence confidence-amber" aria-live="polite">Amber: indicative, check two items.</div>
+
+
+        <div id="leaderboardWrap" class="table-wrap"></div>
+
+        <div class="card-subtle" aria-label="Chart">
+          <div class="row-between">
+            <h2 class="h2">NPV difference vs control</h2>
+            <button class="info" type="button" aria-label="What does NPV and BCR mean?" data-tip="NPV is the present value of (benefits − costs) over the chosen years. Bigger NPV means a stronger net return under the stated assumptions. BCR is benefits divided by costs; above 1 means benefits exceed costs.">What does this mean?</button>
+          </div>
+          <canvas id="chartDeltaNpv" class="chart" width="920" height="280" aria-label="Bar chart of NPV difference versus control"></canvas>
+          <details class="details">
+            <summary>More charts</summary>
+            <div class="charts-more">
+              <div class="chart-block">
+                <div class="chart-title">NPV by treatment</div>
+                <canvas id="chartNpv" class="chart" width="920" height="260" aria-label="Bar chart of NPV by treatment"></canvas>
+              </div>
+              <div class="chart-block">
+                <div class="chart-title">BCR by treatment</div>
+                <canvas id="chartBcr" class="chart" width="920" height="260" aria-label="Bar chart of BCR by treatment"></canvas>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <details id="detailsTable" class="details">
+          <summary>View detailed table</summary>
+          <div id="detailTableWrap" class="table-wrap"></div>
+        </details>
+
+        <details id="detailsReplicate" class="details">
+          <summary>Show replicate view</summary>
+          <div id="replicateTableWrap" class="table-wrap"></div>
+        </details>
+
+        <details id="detailsExplain" class="details">
+          <summary>Explain results for farmers</summary>
+          <div class="help">Creates a ready to paste prompt for Copilot or ChatGPT using the current results.</div>
+          <div class="actions-inline">
+            <button id="btnPromptBriefCopilot" class="btn btn-secondary" type="button">Open in Copilot</button>
+            <button id="btnPromptBriefChatGPT" class="btn btn-secondary" type="button">Open in ChatGPT</button>
+            <button id="btnCopyBriefPrompt" class="btn btn-quiet" type="button">Copy prompt</button>
+          </div>
+          <textarea id="briefPrompt" class="textarea" rows="10" readonly></textarea>
+        </details>
+      </div>
+    </section>
+
+    <section id="tab-export" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-export" hidden>
+      <div class="card">
+        <div class="card-header">
+          <h1>Export</h1>
+        </div>
+
+        <div class="export-primary">
+          <button id="btnDownloadReport" class="btn" type="button" data-tip="Downloads a one page policy brief style report using your current results.">Download 1-page policy brief (DOC)</button>
+        </div>
+
+                <div class="export-secondary">
+          <button id="btnDownloadCleanTsv" class="btn btn-secondary" type="button" data-tip="Downloads the cleaned dataset used in calculations.">Download cleaned data (TSV)</button>
+          <button id="btnDownloadSummaryCsv" class="btn btn-secondary" type="button" data-tip="Downloads the treatment summary table used in the leaderboard.">Download results table (CSV)</button>
+        </div>
+
+        <details class="details">
+          <summary>More downloads and help</summary>
+          <div class="more-block">
+            <div class="more-section">
+              <div class="more-title">Audit trail</div>
+              <div id="auditTrail" class="mono small"></div>
+            </div>
+
+            <div class="more-section">
+              <div class="more-title">Ask the tool</div>
+              <div class="help">Type a question like “Why is the leaderboard empty?” and the tool will answer using the current state.</div>
+              <div class="input-row">
+                <input id="askInput" class="text" type="text" placeholder="Type your question" aria-label="Ask the tool" />
+                <button id="btnAsk" class="btn btn-secondary" type="button">Ask</button>
+              </div>
+              <div id="askAnswer" class="answer"></div>
+            </div>
+          </div>
+        </details>
+
+        <div class="footer">
+          <div>Soil CRC Extension Packages</div>
+          <div class="muted">Version <span id="toolVersion">1.0.2</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+    <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+    <footer class="app-footer" aria-label="Version and method">
+      <div id="footerVersion">Version -</div>
+      <div id="footerMethod" class="muted">Method -</div>
+      <div id="footerGenerated" class="muted">Generated -</div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
